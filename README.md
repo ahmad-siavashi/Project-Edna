@@ -1,7 +1,7 @@
 Praise be to Allah
 
 ---
-title: Abstract
+Abstract
 ...
 
 Bluetooth is by nature a connection-oriented technology which provides a
@@ -37,7 +37,7 @@ communication:
 
 For more clarity the following illustration is provided.
 
-![](media/image5.png)![](media/image6.png)
+![Alt text](/media/image1.png?raw=true)
 
 This is the whole idea considering the initiator as the master and the
 rest of devices as slaves with this in mind that only as small number of
@@ -67,6 +67,8 @@ describes the idea:
 
 For more explanation the following illustration is provided.
 
+![Alt text](/media/image2.png?raw=true)
+
 Proof of Concept
 
 To demonstrate the validity of the idea I wrote a public chat
@@ -76,7 +78,7 @@ the idea works fine. Using two laptops I achieved the following result.
 Program architecture, analysis and time complexity evaluations are
 provided in the following sections.
 
-![](media/image9.png)
+![Alt text](/media/image3.png?raw=true)
 
 Program’s Architecture
 
@@ -85,6 +87,8 @@ The Client part is a separate thread.
 The Server part is an independent process.
 
 The GUI is the main thread that enters GUI’s ‘mainloop’.
+
+![Alt text](/media/image4.png?raw=true)
 
 Time Complexity
 
@@ -126,24 +130,3 @@ Pros & Cons
 3.  Time to update grows as the number of devices grow in the
     environment, however, it can be resolved by focusing on devices
     of interest.
-
-Android App
-
-Beside the desktop version which can be run on all major operating
-systems I tried to write a similar App in Android OS. However I didn’t
-make it due to limitations implied to Bluetooth APIs in handheld
-devices, the result is an application which turns on the device’s
-Bluetooth, scans the environment, then shows the result in a list
-(unlike the desktop version, the process happens asynchronously here)
-then turns off the Bluetooth on its exit.
-
-There’s something called Gatt server introduced with Bluetooth Low
-Energy which I believed can be used for the purpose. After working on
-the idea, I couldn’t achieve anything. But yet, it seems to be a
-potential solution.
-
-![](media/image10.png)Extra Works
-
-The code to discover Bluetooth devices around and retrieving their
-services, opening a socket to a Bluetooth service and advertising a
-service is also supplied with the project.
