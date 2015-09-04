@@ -1,0 +1,1 @@
+https://pypi.python.org/packages/2.7/P/PyBluez/PyBluez-0.21.win32-py2.7.exe#md5=85849dd698855404497659bb38e9e902
