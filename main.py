@@ -1,3 +1,5 @@
+# Developer: Ahmad Siavashi
+# Email: ahmad.siavashi@gmail.com
 from bluetooth import *
 from multiprocessing import *
 from threading import *
