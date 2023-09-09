@@ -1,132 +1,71 @@
-Praise be to Allah
+# Project Edna: Enabling Connectionless Peer-to-Peer Data Transfer via Bluetooth
 
----
-Abstract
-...
+Bluetooth technology, inherently reliant on a connection-oriented paradigm and imposing a strict limit of seven devices within a single Piconet, presents certain limitations. This project endeavors to overcome these constraints by introducing an innovative approach that enables connectionless peer-to-peer communication and data transfer, effectively allowing an unlimited number of devices to participate. This README provides a comprehensive overview of this novel method, its implementation, and detailed explanations.
 
-Bluetooth is by nature a connection-oriented technology which provides a
-master-slave structure between connected devices. In addition it
-restricts the number of devices participating in the network to 7 in one
-Piconet.
+## Table of Contents
 
-Thinking of ways to overcome Bluetooth limitations brought me to a
-solution which provides a way to have a connectionless peer-to-peer
-communication/data transfer among an unlimited number of devices.
+- [Traditional Bluetooth Communication](#traditional-bluetooth-communication)
+- [An Innovative Approach: Connectionless Peer-to-Peer Communication](#an-innovative-approach-connectionless-peer-to-peer-communication)
+- [Proof of Concept: Public Chat Application](#proof-of-concept-public-chat-application)
+- [Program Architecture](#program-architecture)
+- [Time Complexity](#time-complexity)
+- [Pros and Cons](#pros-and-cons)
 
-The method, its implementation and necessary explanations are provided
-during the following sections.
+## Traditional Bluetooth Communication
 
-How Bluetooth works?
+In conventional Bluetooth communication, two devices initiate interaction through a pairing process:
 
-For two devices to communicate, they must get paired at the very
-beginning. The following is how two Bluetooth devices start their
-communication:
+1. **Device Discovery**: The initiator device scans its surroundings to detect other devices.
+2. **Device Advertisement**: The second device broadcasts its presence and the services it offers.
+3. **Target Selection**: The initiator device identifies its target and the suitable service, encompassing Name, Description, Protocol, and Port.
+4. **Connection Establishment**: Subsequently, the initiator establishes a connection to the service, and if the target device accepts, the connection is established.
 
-1.  The initiator device starts scanning the environment to look for the
-    other one.
+![Bluetooth Communication](/media/image1.png)
 
-2.  The second device must announce its existence and the services
-    it provides.
+This conventional approach designates one device as the master and the rest as slaves, with a strict limitation of only seven devices permitted to participate.
 
-3.  The initiator device finds its target and the suitable service which
-    is attached with information, including Name, Description, Protocol
-    and the Port which the service is listening on.
+## An Innovative Approach: Connectionless Peer-to-Peer Communication
 
-4.  The initiator then opens a socket to the service. If the target
-    device accepts, the connection is established.
+To circumvent these limitations and empower Bluetooth devices to communicate without the need for pairing and without imposing constraints on the number of participating devices, we propose a peer-to-peer structure:
 
-For more clarity the following illustration is provided.
+1. **Server and Client Threads**: Each device is equipped with a server thread and a client thread. The server thread advertises a specific service, while the client thread scans the environment for devices advertising that service.
+2. **Data Sharing**: Peers share data with one another by embedding the data they wish to transmit in the 'description' field of the service they are advertising.
+3. **Data Retrieval**: Devices retrieve data from other peers by scanning available devices, inspecting their services for the specific service advertised by fellow peers, and retrieving the data from the 'description' field.
 
-![Alt text](/media/image1.png?raw=true)
+![Peer-to-Peer Bluetooth](/media/image2.png)
 
-This is the whole idea considering the initiator as the master and the
-rest of devices as slaves with this in mind that only as small number of
-devices as 7 can get involved.
+## Proof of Concept: Public Chat Application
 
-How to bypass the limitations?
+To validate this concept, a public chat application was developed using Python and the PyBluez library. This application effectively demonstrated peer-to-peer communication using two laptops.
 
-Now, I came up with an idea which makes it possible for Bluetooth
-devices to communicate without getting paired or having any limit in the
-number of devices participating in a network. It also exhibits a
-peer-to-peer structure rather than a master-slave one. The following
-describes the idea:
+![Chat Application](/media/image3.png)
 
-1.  Each device is consisted of a server thread and a client thread. The
-    server thread starts advertising a specific service and the client
-    thread starts scanning the environment for devices advertising that
-    specific service.
+## Program Architecture
 
-2.  Each peer (device) sends its data to possible peers by placing the
-    data it wants to share in the ‘description’ field of the service it
-    is advertising (in its server thread).
+The program architecture is structured as follows:
 
-3.  Furthermore each peer retrieves other peer’s data via scanning
-    available devices in the range then fetching their services looking
-    for that specific service advertised by other peers and finally
-    retrieving the ‘description’ field of the service.
+- **Client Component**: Operating as a separate thread.
+- **Server Component**: Functioning as an independent process.
+- **Graphical User Interface (GUI)**: Managed by the main thread, which enters the GUI's 'mainloop'.
 
-For more explanation the following illustration is provided.
+![Program Architecture](/media/image4.png)
 
-![Alt text](/media/image2.png?raw=true)
+## Time Complexity
 
-Proof of Concept
+The time complexity primarily hinges on the client thread, comprising nested loops. The outer loop iterates over discovered devices, while the inner loop iterates over each device's advertised services. As the number of devices in the environment increases, the time required also scales. Further analysis is warranted to ascertain the precise order of time growth, as accurate measurements remain pending.
 
-To demonstrate the validity of the idea I wrote a public chat
-application by Python programming language using PyBluez library (this
-way, it can be used in all major operating systems). It turned out that
-the idea works fine. Using two laptops I achieved the following result.
-Program architecture, analysis and time complexity evaluations are
-provided in the following sections.
+The current synchronous implementation of the scanning phase leaves room for improvement. Implementing an asynchronous approach holds promise for potentially significant speed enhancements.
 
-![Alt text](/media/image3.png?raw=true)
-
-Program’s Architecture
-
-The Client part is a separate thread.
-
-The Server part is an independent process.
-
-The GUI is the main thread that enters GUI’s ‘mainloop’.
-
-![Alt text](/media/image4.png?raw=true)
-
-Time Complexity
-
-The bottleneck lies in the Client thread which is consisted of 2 nested
-loops. The outer loop iterates over found devices and the inner one
-iterates over each device’s advertised services. The time grows as the
-number of devices in the environment grows. I can’t tell yet whether the
-order of the time growth is exponentially or not. But it took a
-significant amount of time in an environment with some 24 discoverable
-devices from which 3 laptops were running the intended software.
-Unfortunately no accurate measurements are available.
-
-The scanning phase has been implemented in a synchronous manner. I
-suppose if this process happens asynchronously instead, we can achieve a
-great speed up. Not to exaggerate, probably the speed up will be a
-breakthrough indeed.
-
-Pros & Cons
+## Pros and Cons
 
 **Pros:**
 
-1.  Providing a connectionless way of data transfer for Bluetooth
-    technology which is a connection-oriented technology by nature.
-
-2.  Providing a peer-to-peer network structure for Bluetooth technology
-    which is by nature a master-slave technology.
-
-3.  Involving an unlimited number of devices in the (If implemented,
-    Bluetooth technology only supports 7 devices in one Piconet).
+1. Pioneers a connectionless method for data transfer in Bluetooth, addressing a technology inherently designed around connections.
+2. Transforms Bluetooth from a master-slave structure into a peer-to-peer network, thereby expanding its utility.
+3. Eliminates the restriction on the number of devices, permitting an unlimited number of devices to participate, in stark contrast to Bluetooth's traditional seven-device limit within one Piconet.
 
 **Cons:**
 
-1.  There is an inherent scanning time which can only be reduced,
-    not eliminated.
-
-2.  Available devices may be neglected time to time in searches. Highly
-    depends on the device scanning accuracy.
-
-3.  Time to update grows as the number of devices grow in the
-    environment, however, it can be resolved by focusing on devices
-    of interest.
+1. The inherent scanning time, while reducible, remains a factor.
+2. Occasional oversights of available devices during scans may occur, contingent on scanning accuracy.
+3. As the number of devices in the environment grows, update times increase, potentially mitigated through focused attention on devices of interest.
